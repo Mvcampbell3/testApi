@@ -55,6 +55,11 @@
         .roomArea{
             display: none;
         }
+
+        .gameRoom img{
+            width: 300px;
+            height: auto;
+        }
     
     </style>
 </head>
@@ -88,15 +93,21 @@
     <div id ="gameRoom" class="gameRoom">
         <h2 class="roomTitle">Room Name</h2>
         <h3 class="hint" id="hint1"></h3>
-        <input type="file" accept="image/*" id="file-input1"><br>
+        <input type="file" accept="image/*" id="file-input1" data-pic="pic1URL" data-full="input_1_full"><br>
+        <img src="" alt="" id="img1">
         <h3 class="hint" id="hint2"></h3>
-        <input type="file" accept="image/*" id="file-input2"><br>
+        <input type="file" accept="image/*" id="file-input2" data-pic="pic2URL" data-full="input_2_full"><br>
+        <img src="" alt="" id="img2">
         <h3 class="hint" id="hint3"></h3>
-        <input type="file" accept="image/*" id="file-input3"><br>
+        <input type="file" accept="image/*" id="file-input3" data-pic="pic3URL" data-full="input_3_full"><br>
+        <img src="" alt="" id="img3">
         <h3 class="hint" id="hint4"></h3>
-        <input type="file" accept="image/*" id="file-input4"><br>
+        <input type="file" accept="image/*" id="file-input4" data-pic="pic4URL" data-full="input_4_full"><br>
+        <img src="" alt="" id="img4">
         <h3 class="hint" id="hint5"></h3>
-        <input type="file" accept="image/*" id="file-input5"><br>
+        <input type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
+        <img src="" alt="" id="img5">
+
     </div>
     <div class="roomArea">
         <div class="outputArea"></div>

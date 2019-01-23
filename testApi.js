@@ -243,19 +243,6 @@ var game = {
 
 // Need to clean this up, add to the game object or make new object
 
-var storageRef = firebase.storage().ref("/userPics/" + game.roomName);
-
-// var fileInput1 = document.getElementById('file-input1');
-// var fileInput2 = document.getElementById('file-input2');
-// var fileInput3 = document.getElementById('file-input3');
-// var fileInput4 = document.getElementById('file-input4');
-// var fileInput5 = document.getElementById('file-input5');
-
-// fileInput1.addEventListener('change', (e) => doSomethingWithFiles(e));
-// fileInput2.addEventListener('change', (e) => doSomethingWithFiles(e));
-// fileInput3.addEventListener('change', (e) => doSomethingWithFiles(e));
-// fileInput4.addEventListener('change', (e) => doSomethingWithFiles(e));
-// fileInput5.addEventListener('change', (e) => doSomethingWithFiles(e));
 
 var fileInputArea = document.getElementById("gameRoom");
 
@@ -265,7 +252,6 @@ fileInputArea.addEventListener("change", function (e) {
     }
 })
 
-var storageArray = [];
 function doSomethingWithFiles(e) {
     // Grabs the files from the input, stores it in storage array
     // When storageArray.length == 5, takes the files and stores them to the firebase cloud
@@ -273,26 +259,62 @@ function doSomethingWithFiles(e) {
     // console.log(e.target.files);
 
     var file = e.target.files[0];
-    var userDatabase = firebase.database().ref("/gameStorage/userRooms/" + game.roomName);
+    var userDatabase = firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey);
+    var whichInput = e.target.id;
+    var whichURL = $("#" + whichInput).attr("data-pic");
+    switch (whichURL) {
+        case "pic1URL":
+            picHolder[0].picFile = file;
+            picHolder[0].picChange = true;
+            updateStorage();
+            break;
+        case "pic2URL":
+            picHolder[1].picFile = file;
+            picHolder[1].picChange = true;
+            updateStorage();
+            break;
+        case "pic3URL":
+            picHolder[2].picFile = file;
+            picHolder[2].picChange = true;
+            updateStorage();
+            break;
+        case "pic4URL":
+            picHolder[3].picFile = file;
+            picHolder[3].picChange = true;
+            updateStorage();
+            break;
+        case "pic5URL":
+            picHolder[4].picFile = file;
+            picHolder[4].picChange = true;
+            updateStorage();
+            break;
+        default:
+            console.log("pic switch not working as expected");
+    }
+    console.log(picHolder);
 
-    storageArray.push(file);
-    console.log(e.target.id);
-    $("#" + e.target.id).fadeOut();
-    if (storageArray.length >= 5) {
-        console.log("all inputs are filled");
-        console.log(storageArray[0].name);
-        for (var i = 0; i < storageArray.length; i++) {
-            var place = storageRef.child(storageArray[i].name);
-            place.put(storageArray[i]).then(function (snap) {
-                console.log("loaded a file");
-                snap.ref.getDownloadURL().then(function (downloadURL) {
-                    console.log(downloadURL);
-                    var saveURL = userDatabase.push();
+}
 
-                    saveURL.set({
-                        url: downloadURL,
-                    });
+var picHolder = [
+    { picName: "pic1URL", picChange: false, picFile: null },
+    { picName: "pic2URL", picChange: false, picFile: null },
+    { picName: "pic3URL", picChange: false, picFile: null },
+    { picName: "pic4URL", picChange: false, picFile: null },
+    { picName: "pic5URL", picChange: false, picFile: null }
+]
+
+function updateStorage() {
+    for (var i = 0; i < picHolder.length; i++) {
+        if (picHolder[i].picChange === true) {
+            picHolder[i].picChange = false;
+            var place = firebase.storage().ref("/userPics/" + userRoom.roomKey + "/" + picHolder[i].picName);
+            var setPic = place.put(picHolder[i].picFile).then(function (snap) {
+                console.log("added pic");
+                console.log(snap.ref);
+                snap.ref.getDownloadURL().then(function(url){
+                    console.log(url);
                 })
+                
             })
         }
     }
@@ -305,6 +327,7 @@ var userRoom = {
     roomName: "Mikes",//Grab from html input
     gameName: "testGame1",//grab from html input
     hints: [],
+    picURls: [],
     roomKey: "",
 
     getHints: function () {
@@ -314,6 +337,7 @@ var userRoom = {
             console.log(snapshot.val());
             for (var i = 0; i < snapshot.val().length; i++) {
                 userRoom.hints.push(snapshot.val()[i].picHint);
+                userRoom.picURls.push(snapshot.val()[i].picURL)
                 console.log(userRoom.hints[i]);
             }
         }).then(function (response) {
@@ -343,16 +367,11 @@ var userRoom = {
             users: [authenication.displayName],
             // Will be grabbed from auth process
 
-            pic1Url: "",
-            input_1_full: false,
-            pic2Url: "",
-            input_2_full: false,
-            pic3Url: "",
-            input_3_full: false,
-            pic4Url: "",
-            input_4_full: false,
-            pic5Url: "",
-            input_5_full: false,
+            pic1Url: this.picURls[0],
+            pic2Url: this.picURls[1],
+            pic3Url: this.picURls[2],
+            pic4Url: this.picURls[3],
+            pic5Url: this.picURls[4],
         });
 
     },
@@ -373,10 +392,9 @@ var userRoom = {
 
     openRoom: function () {
         $(".roomArea").slideUp();
-        $(".gameRoom").slideDown();
         var gameDatabase = firebase.database().ref("/gameStorage/userRooms/" + $(this).attr("data-roomKey"));
 
-        gameDatabase.on("value", function(snap){
+        gameDatabase.on("value", function (snap) {
             var here = snap.val();
             $(".roomTitle").text(here.roomName);
             $("#hint1").text(here.hint1);
@@ -385,6 +403,9 @@ var userRoom = {
             $("#hint4").text(here.hint4);
             $("#hint5").text(here.hint5);
         })
+        $(".gameRoom").slideDown();
+
+
     }
 }
 
@@ -411,10 +432,12 @@ function setTestGame() {
     var database = firebase.database().ref("/gameStorage/games/testGame1");
 
     database.set([
-        { picURL: "pic1.jpg", picHint: "This is where the hint1 will go" },
-        { picURL: "pic2.jpg", picHint: "This is where the hint2 will go" },
-        { picURL: "pic3.jpg", picHint: "This is where the hint3 will go" },
-        { picURL: "pic4.jpg", picHint: "This is where the hint4 will go" },
-        { picURL: "pic5.jpg", picHint: "This is where the hint5 will go" },
+        { picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404", picHint: "This is where the hint1 will go" },
+        { picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404", picHint: "This is where the hint2 will go" },
+        { picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404", picHint: "This is where the hint3 will go" },
+        { picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404", picHint: "This is where the hint4 will go" },
+        { picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404", picHint: "This is where the hint5 will go" },
     ])
 }
+
+//https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/userPics%2Fpic1URL?alt=media&token=aae81dab-5081-4d42-9398-8d2a03ed498a
