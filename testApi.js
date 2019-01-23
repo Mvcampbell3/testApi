@@ -245,17 +245,23 @@ var game = {
 
 var storageRef = firebase.storage().ref("/userPics/" + game.roomName);
 
-var fileInput1 = document.getElementById('file-input1');
-var fileInput2 = document.getElementById('file-input2');
-var fileInput3 = document.getElementById('file-input3');
-var fileInput4 = document.getElementById('file-input4');
-var fileInput5 = document.getElementById('file-input5');
+// var fileInput1 = document.getElementById('file-input1');
+// var fileInput2 = document.getElementById('file-input2');
+// var fileInput3 = document.getElementById('file-input3');
+// var fileInput4 = document.getElementById('file-input4');
+// var fileInput5 = document.getElementById('file-input5');
 
-fileInput1.addEventListener('change', (e) => doSomethingWithFiles(e));
-fileInput2.addEventListener('change', (e) => doSomethingWithFiles(e));
-fileInput3.addEventListener('change', (e) => doSomethingWithFiles(e));
-fileInput4.addEventListener('change', (e) => doSomethingWithFiles(e));
-fileInput5.addEventListener('change', (e) => doSomethingWithFiles(e));
+// fileInput1.addEventListener('change', (e) => doSomethingWithFiles(e));
+// fileInput2.addEventListener('change', (e) => doSomethingWithFiles(e));
+// fileInput3.addEventListener('change', (e) => doSomethingWithFiles(e));
+// fileInput4.addEventListener('change', (e) => doSomethingWithFiles(e));
+// fileInput5.addEventListener('change', (e) => doSomethingWithFiles(e));
+
+var fileInputArea = document.getElementById("gameRoom");
+
+fileInputArea.addEventListener("change", function (e) {
+    console.log(e.target);
+})
 
 var storageArray = [];
 function doSomethingWithFiles(e) {
@@ -330,7 +336,7 @@ var userRoom = {
             roomName: userRoom.roomName,
             roomKey: "",
             roomCreator: authenication.displayName,
-            
+
 
             users: [authenication.displayName],
             // Will be grabbed from auth process
@@ -361,12 +367,32 @@ var userRoom = {
 
         newDiv.append(title, userNum);
         $(".outputArea").append(newDiv);
-    })
+    }),
+
+    openRoom: function () {
+        $(".roomArea").slideUp();
+        $(".gameRoom").slideDown();
+        var gameDatabase = firebase.database().ref("/gameStorage/userRooms/" + $(this).attr("data-roomKey"));
+
+        // console.log($(this).attr("data-roomKey"));
+
+        gameDatabase.on("value", function(snap){
+            var here = snap.val();
+            $(".roomTitle").text(here.roomName);
+            $("#hint1").text(here.hint1);
+            $("#hint2").text(here.hint2);
+            $("#hint3").text(here.hint3);
+            $("#hint4").text(here.hint4);
+            $("#hint5").text(here.hint5);
+        })
+    }
 }
 
-setTimeout(function(){
+setTimeout(function () {
     $(".roomArea").slideDown();
-}, 1000)
+}, 1000);
+
+$(".outputArea").on("click", ".box", userRoom.openRoom)
 
 
 
