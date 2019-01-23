@@ -11,78 +11,47 @@ firebase.initializeApp(config);
 
 // ------------ Authentication Area -----------------//
 
-var justSigned = false;
-var displayName;
+var authenication = {
+    justSigned: false,
+    displayName: "MichaelC25",
+    // Need to set this from the form login page. update on html script for now
 
-var auth = firebase.auth();
 
-$(".signUpSubBtn").on("click", function (e) {
-    e.preventDefault();
-    // Create user has a password confirmation input
-    if ($("#passwordInput1").val().trim() === $("#passwordInput2").val().trim()) {
-        justSigned = true;
+    hello: firebase.auth().onAuthStateChanged(function (user) {
+        if (user && this.justSigned) {
+            // User is signed in and just created account
+            user.updateProfile({
+                displayName: this.displayName,
+            });
+            justSigned = false;
+            console.log(user + " first sign in");
+        } else if (user && !this.justSigned) {
+            // User is signed in and already was a user
+            console.log(user);
+            console.log(user.displayName + " logged in again");
+            this.displayName = user.displayName;
+        } else {
+            console.log("not logged in");
+            // Not signed in
+        }
+    }),
 
-        displayName = $("#nameInputSign").val().trim();
-        var email = $("#emailInputSign").val().trim();
-        var password = $("#passwordInputSign").val().trim();
-
-        var promise = auth.createUserWithEmailAndPassword(email, password)
-
-        promise.catch(function (error) {
-            console.log(error.code + ": " + error.message);
+    goodbye: firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+        .then(function () {
+            var provider = new firebase.auth.GoogleAuthProvider();
+            // In memory persistence will be applied to the signed in Google user
+            // even though the persistence was set to 'none' and a page redirect
+            // occurred.
+            return firebase.auth().signInWithRedirect(provider);
         })
-    } else {
-        alert("Passwords do not match");
-    }
+        .catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        }),
 
-});
+}
 
-$(".loginSubBtn").on("click", function (e) {
-    e.preventDefault();
-
-    var email = $("#emailInputLog").val().trim();
-    var password = $("#passwordInputLog").val().trim();
-
-    var promise = auth.signInWithEmailAndPassword(email, password);
-
-    promise.catch(function (error) {
-        console.log(error.code + ": " + error.message);
-    })
-})
-
-auth.onAuthStateChanged(function (user) {
-    if (user && justSigned) {
-        // User is signed in and just created account
-        user.updateProfile({
-            displayName: displayName,
-        });
-        justSigned = false;
-        console.log(user + " first sign in");
-    } else if (user && !justSigned) {
-        // User is signed in and already was a user
-        console.log(user);
-        console.log(user.displayName + " logged in again");
-    } else {
-        console.log("not logged in");
-        // Not signed in
-    }
-});
-
-// This is to log someone off when the close the browser
-auth.setPersistence(firebase.auth.Auth.Persistence.NONE)
-    .then(function () {
-        var provider = new firebase.auth.GoogleAuthProvider();
-        // In memory persistence will be applied to the signed in Google user
-        // even though the persistence was set to 'none' and a page redirect
-        // occurred.
-        return firebase.auth().signInWithRedirect(provider);
-    })
-    .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-    });
-;
 
 // ---------------- Image Recognition Api ----------//
 
@@ -114,7 +83,7 @@ var game = {
 
     game_URLs: [],
     roomName: "Mike's Room", // Will be grabbed from input
-    
+    // Going to be linked from userRoom object
     gameName: "testGame", // Will be grabbed from input
     gameInfo: null,
 
@@ -242,21 +211,22 @@ var game = {
     runCompare: function () {
         var grabArray = [];
 
-        var addToGrab = firebase.database().ref("/gameStorage/"+game.gameName+"/"+game.roomName);
+        var addToGrab = firebase.database().ref("/gameStorage/userRooms/" + game.roomName);
 
         addToGrab.once("value", function (snapshot) {
             snapshot.forEach(function (childSnap) {
                 var url = childSnap.val().url;
                 grabArray.push(url);
             })
-        }).then(function(){
+        }).then(function () {
             console.log(grabArray);
             for (var i = 0; i < grabArray.length; i++) {
                 game.checkURL(grabArray[i]);
+                console.log(grabArray[i]);
             }
         })
 
-        
+
     },
 
     setGameDatabase: function () {
@@ -292,10 +262,10 @@ function doSomethingWithFiles(e) {
     // Grabs the files from the input, stores it in storage array
     // When storageArray.length == 5, takes the files and stores them to the firebase cloud
     console.log(e.target.files);
-    console.log(e.target.files[0].name);
+    // console.log(e.target.files);
 
     var file = e.target.files[0];
-    var userDatabase = firebase.database().ref("/gameStorage/"+game.gameName+"/"+game.roomName);
+    var userDatabase = firebase.database().ref("/gameStorage/userRooms/" + game.roomName);
 
     storageArray.push(file);
     console.log(e.target.id);
@@ -305,7 +275,7 @@ function doSomethingWithFiles(e) {
         console.log(storageArray[0].name);
         for (var i = 0; i < storageArray.length; i++) {
             var place = storageRef.child(storageArray[i].name);
-            place.put(file).then(function (snap) {
+            place.put(storageArray[i]).then(function (snap) {
                 console.log("loaded a file");
                 snap.ref.getDownloadURL().then(function (downloadURL) {
                     console.log(downloadURL);
@@ -320,19 +290,108 @@ function doSomethingWithFiles(e) {
     }
 }
 
-// Just to set the testGame database
-// May change name to id for clarifai id storage
-function setGameDatabaseTestGame() {
-    var database = firebase.database().ref("/gameStorage/testGame");
+// Room Object-------------------------//
 
-    var setInfo = database.set({
+var userRoom = {
 
-        pictures: [
-            { name: "birthday sign", url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161536997.jpg?alt=media&token=96cecc86-de0e-4169-bf11-c68d8d39045f" },
-            { name: "home sign", url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161547509.jpg?alt=media&token=36d5318a-89d1-4578-821f-06038cc2b5e1" },
-            { name: "air fryer", url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161616979.jpg?alt=media&token=f0479709-6b91-4c24-9106-1d36909626f9" },
-            { name: "instant-pot", url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161630353.jpg?alt=media&token=3c1a5b30-c30d-4ae3-b5dc-5c72555fbf93" },
-            { name: "lignting mcQueen poster", url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161641626.jpg?alt=media&token=30e3a751-ac55-4a3e-87aa-02fbd1f3e5d3" },
-        ]
+    roomName: "Mikes",//Grab from html input
+    gameName: "testGame1",//grab from html input
+    hints: [],
+    roomKey: "",
+
+    grabHints: function () {
+        var database = firebase.database().ref("/gameStorage/games/" + this.gameName);
+
+        database.once("value", function (snapshot) {
+            console.log(snapshot.val());
+            for (var i = 0; i < snapshot.val().length; i++) {
+                userRoom.hints.push(snapshot.val()[i].picHint);
+                console.log(userRoom.hints[i]);
+            }
+        }).then(function (response) {
+            userRoom.roomDatabaseInit();
+        });
+    },
+
+    roomDatabaseInit: function () {
+        // Need to push room to userRooms database
+        // Save Room ID;
+        // Data-room 
+        var roomDatabase = firebase.database().ref("/gameStorage/userRooms/")
+        var roomNew = roomDatabase.push();
+
+        roomNew.set({
+            hint1: this.hints[0],
+            hint2: this.hints[1],
+            hint3: this.hints[2],
+            hint4: this.hints[3],
+            hint5: this.hints[4],
+
+            roomName: userRoom.roomName,
+            roomKey: "",
+
+            users: [authenication.displayName],
+            // Will be grabbed from auth process
+
+            pic1Url: "",
+            input_1_full: false,
+            pic2Url: "",
+            input_2_full: false,
+            pic3Url: "",
+            input_3_full: false,
+            pic4Url: "",
+            input_4_full: false,
+            pic5Url: "",
+            input_5_full: false,
+        });
+
+        var getKey = roomDatabase.once("child_added", function (snap) {
+            console.log(snap.key);
+            userRoom.roomKey = snap.key;
+        }).then(function(){
+            firebase.database().ref("/gameStorage/userRooms/"+ userRoom.roomKey).update({
+                roomKey: userRoom.roomKey,
+            })
+        })
+    },
+
+    addToPage: firebase.database().ref("/gameStorage/userRooms").on("child_added", function (snapshot) {
+        var childKey = snapshot.key;
+        var childData = snapshot.val();
+        console.log(childData);
+
+        var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childData.roomID);
+        var title = $("<h2>").attr("class", "divTitle").text(childData.roomName);
+        var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
+
+        newDiv.append(title, userNum);
+        $(".roomArea").append(newDiv);
     })
-};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function setTestGame() {
+    var database = firebase.database().ref("/gameStorage/games/testGame1");
+
+    database.set([
+        { picURL: "pic1.jpg", picHint: "This is where the hint1 will go" },
+        { picURL: "pic2.jpg", picHint: "This is where the hint2 will go" },
+        { picURL: "pic3.jpg", picHint: "This is where the hint3 will go" },
+        { picURL: "pic4.jpg", picHint: "This is where the hint4 will go" },
+        { picURL: "pic5.jpg", picHint: "This is where the hint5 will go" },
+    ])
+}
