@@ -299,7 +299,7 @@ var userRoom = {
     hints: [],
     roomKey: "",
 
-    grabHints: function () {
+    getHints: function () {
         var database = firebase.database().ref("/gameStorage/games/" + this.gameName);
 
         database.once("value", function (snapshot) {
@@ -329,6 +329,8 @@ var userRoom = {
 
             roomName: userRoom.roomName,
             roomKey: "",
+            roomCreator: authenication.displayName,
+            
 
             users: [authenication.displayName],
             // Will be grabbed from auth process
@@ -345,31 +347,26 @@ var userRoom = {
             input_5_full: false,
         });
 
-        var getKey = roomDatabase.once("child_added", function (snap) {
-            console.log(snap.key);
-            userRoom.roomKey = snap.key;
-        }).then(function(){
-            firebase.database().ref("/gameStorage/userRooms/"+ userRoom.roomKey).update({
-                roomKey: userRoom.roomKey,
-            })
-        })
     },
 
     addToPage: firebase.database().ref("/gameStorage/userRooms").on("child_added", function (snapshot) {
         var childKey = snapshot.key;
         var childData = snapshot.val();
-        console.log(childData);
+        // console.log(childData);
+        console.log(childKey);
 
-        var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childData.roomID);
+        var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childKey);
         var title = $("<h2>").attr("class", "divTitle").text(childData.roomName);
         var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
 
         newDiv.append(title, userNum);
-        $(".roomArea").append(newDiv);
+        $(".outputArea").append(newDiv);
     })
 }
 
-
+setTimeout(function(){
+    $(".roomArea").slideDown();
+}, 1000)
 
 
 

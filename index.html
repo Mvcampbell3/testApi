@@ -16,25 +16,102 @@
             margin-bottom: 3px;
             cursor: pointer;
         }
+
+        .gameRoom{
+            display: none;
+        }
+
+        .btn{
+            width: 175px;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 20px;
+            border: 1px black solid;
+            box-shadow: 3px 3px 5px black;
+            outline: none;
+        }
+        .btn:focus{
+            background-color: red;
+        }
+
+        input[type=text]{
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .createRoomArea{
+            margin: 10px 0;
+            display: none;
+        }
+
+        .makeRoom{
+            margin: 8px 0;
+        }
+
+        .loginArea{
+            display: none;
+        }
+
+        .roomArea{
+            display: none;
+        }
     
     </style>
 </head>
 
 <body>
+    <div class="loginArea">
+        <form action="">
+            <label for="name">Name</label><br>
+            <input type="text" name="name" id="nameInputSign"><br>
+            <label for="email">Email Address</label><br>
+            <input type="text" name="email" id="emailInputSign"><br>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" id="passwordInputSign"><br>
+            <button class="signUpSubBtn">Submit Sign Up</button>
+        </form>
 
-    
+        <br>
+        <hr>
+        <br>
+
+        <form action="">
+            <label for="email">Email Address</label><br>
+            <input type="text" name="email" id="emailInputLog"><br>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" id="passwordInputLog"><br>
+            <button class="loginSubBtn">Submit Login</button>
+        </form>
+    </div>
 
 
-    <input type="file" accept="image/*" id="file-input1">
-    <input type="file" accept="image/*" id="file-input2">
-    <input type="file" accept="image/*" id="file-input3">
-    <input type="file" accept="image/*" id="file-input4">
-    <input type="file" accept="image/*" id="file-input5">
+    <div class="gameRoom">
+        <h3 class="hint" id="hint1"></h3>
+        <input type="file" accept="image/*" id="file-input1"><br>
+        <h3 class="hint" id="hint2"></h3>
+        <input type="file" accept="image/*" id="file-input2"><br>
+        <h3 class="hint" id="hint3"></h3>
+        <input type="file" accept="image/*" id="file-input3"><br>
+        <h3 class="hint" id="hint4"></h3>
+        <input type="file" accept="image/*" id="file-input4"><br>
+        <h3 class="hint" id="hint5"></h3>
+        <input type="file" accept="image/*" id="file-input5"><br>
+    </div>
+    <div class="roomArea">
+        <div class="outputArea"></div>
+        <div class="buttonArea">
+            <div class="createRoom btn">Create</div>
+        </div>
+    </div>
+    <div class="createRoomArea">
+        <label for="roomName">Room Name:</label><br>
+        <input type="text" name="roomName" id="roomName"><br>
+        <button class="btn selectRoom testGame1" data-game="testGame1">TestGame1</button>
+        <!-- <button class="btn selectRoom testGame2" data-game="testGame2">TestGame2</button> -->
+    </div>
 
-    <div class="roomArea"></div>
 
-
-<!-- Start of Script area -->
+    <!-- Start of Script area -->
     <script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
@@ -46,30 +123,21 @@
 
 
     <script src="testApi.js"></script>
+    <script>
+        $(".createRoom").on("click", function () {
+            $(".roomArea").slideUp();
+            $(".createRoomArea").slideDown();
+        })
+
+        $(".selectRoom").on("click", function () {
+            userRoom.gameName = $(this).attr("data-game");
+            userRoom.roomName = $("#roomName").val().trim();
+            $(".createRoomArea").slideUp();
+            $(".roomArea").slideDown();
+            userRoom.getHints();
+        })
+
+    </script>
 </body>
 
 </html>
-
-<!-- <form action="">
-        <label for="name">Name</label><br>
-        <input type="text" name="name" id="nameInputSign"><br>
-        <label for="email">Email Address</label><br>
-        <input type="text" name="email" id="emailInputSign"><br>
-        <label for="password">Password</label><br>
-        <input type="password" name="password" id="passwordInputSign"><br>
-        <button class="signUpSubBtn">Submit Sign Up</button>
-    </form>
-
-    <br>
-    <hr>
-    <br>
-
-    <form action="">
-        <label for="email">Email Address</label><br>
-        <input type="text" name="email" id="emailInputLog"><br>
-        <label for="password">Password</label><br>
-        <input type="password" name="password" id="passwordInputLog"><br>
-        <button class="loginSubBtn">Submit Login</button>
-    </form>
-
-    <button class="testBtn">Test</button> -->
