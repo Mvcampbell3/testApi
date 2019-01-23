@@ -302,20 +302,68 @@ var picHolder = [
     { picName: "pic4URL", picChange: false, picFile: null },
     { picName: "pic5URL", picChange: false, picFile: null }
 ]
-
+var whichPic = null;
+var picSub = null;
 function updateStorage() {
     for (var i = 0; i < picHolder.length; i++) {
         if (picHolder[i].picChange === true) {
             picHolder[i].picChange = false;
+            picSub = picHolder[i].picName;
             var place = firebase.storage().ref("/userPics/" + userRoom.roomKey + "/" + picHolder[i].picName);
             var setPic = place.put(picHolder[i].picFile).then(function (snap) {
                 console.log("added pic");
-                console.log(snap.ref);
-                snap.ref.getDownloadURL().then(function(url){
-                    console.log(url);
+                snap.ref.getDownloadURL().then(function (url) {
+                    whichPic = url;
                 })
-                
-            })
+
+            });
+            console.log(picHolder[i].picName);
+        }
+    }
+    updateDatabase();
+}
+
+function updateDatabase() {
+    if (whichPic == null || picSub == null) {
+        console.log("waiting");
+        setTimeout(updateDatabase, 250);
+    } else {
+        console.log("whichPic: " + whichPic + ", picName:" + picSub);
+        var userDatabase = firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey);
+
+        switch (picSub) {
+            case "pic1URL":
+                var update = {
+                    pic1URL: whichPic,
+                }
+                userDatabase.update(update);
+                break;
+            case "pic2URL":
+                var update = {
+                    pic2URL: whichPic,
+                }
+                userDatabase.update(update);
+                break;
+            case "pic3URL":
+                var update = {
+                    pic3URL: whichPic,
+                }
+                userDatabase.update(update);
+                break;
+            case "pic4URL":
+                var update = {
+                    pic4URL: whichPic,
+                }
+                userDatabase.update(update);
+                break;
+            case "pic5URL":
+                var update = {
+                    pic5URL: whichPic,
+                }
+                userDatabase.update(update);
+                break;
+            default:
+                console.log("pickSub switch not working as expected");
         }
     }
 }
@@ -367,11 +415,11 @@ var userRoom = {
             users: [authenication.displayName],
             // Will be grabbed from auth process
 
-            pic1Url: this.picURls[0],
-            pic2Url: this.picURls[1],
-            pic3Url: this.picURls[2],
-            pic4Url: this.picURls[3],
-            pic5Url: this.picURls[4],
+            pic1URL: this.picURls[0],
+            pic2URL: this.picURls[1],
+            pic3URL: this.picURls[2],
+            pic4URL: this.picURls[3],
+            pic5URL: this.picURls[4],
         });
 
     },
@@ -393,6 +441,7 @@ var userRoom = {
     openRoom: function () {
         $(".roomArea").slideUp();
         var gameDatabase = firebase.database().ref("/gameStorage/userRooms/" + $(this).attr("data-roomKey"));
+        userRoom.roomKey = $(this).attr("data-roomKey");
 
         gameDatabase.on("value", function (snap) {
             var here = snap.val();
