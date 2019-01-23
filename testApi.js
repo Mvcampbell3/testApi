@@ -260,7 +260,9 @@ var storageRef = firebase.storage().ref("/userPics/" + game.roomName);
 var fileInputArea = document.getElementById("gameRoom");
 
 fileInputArea.addEventListener("change", function (e) {
-    console.log(e.target);
+    if (e.target.type === "file") {
+        doSomethingWithFiles(e);
+    }
 })
 
 var storageArray = [];
@@ -373,8 +375,6 @@ var userRoom = {
         $(".roomArea").slideUp();
         $(".gameRoom").slideDown();
         var gameDatabase = firebase.database().ref("/gameStorage/userRooms/" + $(this).attr("data-roomKey"));
-
-        // console.log($(this).attr("data-roomKey"));
 
         gameDatabase.on("value", function(snap){
             var here = snap.val();
