@@ -106,7 +106,8 @@
         <img src="" alt="" id="img4">
         <h3 class="hint" id="hint5"></h3>
         <input type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
-        <img src="" alt="" id="img5">
+        <img src="" alt="" id="img5"><br>
+        <button class="btn subBtn">Submit Answers</button>
 
     </div>
     <div class="roomArea">
@@ -115,6 +116,7 @@
             <div class="createRoom btn">Create</div>
         </div>
     </div>
+    
     <div class="createRoomArea">
         <label for="roomName">Room Name:</label><br>
         <input type="text" name="roomName" id="roomName"><br>
@@ -136,18 +138,7 @@
 
     <script src="testApi.js"></script>
     <script>
-        $(".createRoom").on("click", function () {
-            $(".roomArea").slideUp();
-            $(".createRoomArea").slideDown();
-        })
-
-        $(".selectRoom").on("click", function () {
-            userRoom.gameName = $(this).attr("data-game");
-            userRoom.roomName = $("#roomName").val().trim();
-            $(".createRoomArea").slideUp();
-            $(".roomArea").slideDown();
-            userRoom.getHints();
-        })
+        
 
     </script>
 </body>
