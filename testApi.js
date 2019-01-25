@@ -209,22 +209,36 @@ var game = {
         );
     },
 
-    checkURL: function (URL) {
+    checkURL: function (URL, i) {
         // Basic component of the game, get the values back
         // can also be targeted if cloud storage is too big
         app.inputs.search({ input: { url: URL } }).then(
             function (response) {
+                console.log("-------------------------------------------")
+                console.log(response);
                 console.log("This was the url used " + URL);
-                // Gets the highest return score
-                // console.log(response.hits[0].score)
-                $("#imgGuess").attr("src", URL);
-                $("#imgRight").attr("src", response.hits[0].input.data.image.url);
+                $("#imgGuess"+i).attr("src", game.userPics[i]);
+                $("#imgRight"+i).attr("src", game.correctPics[i])
+                var rightPic = game.correctPics[i];
                 // console.log(response.hits[0].input.data.image.url)
-                $("#value").text(response.hits[0].score.toFixed(2))
+                console.log(i + " was the iterator from run compare");
+                console.log(game.correctPics[i]);
+                console.log(game.userPics[i]);
+                var getRight = [];
+                for (var j = 0; j < response.hits.length; j++) {
+                    // console.log(response.hits[i].input.data.image.url);
+                    getRight.push(response.hits[j].input.data.image.url);
+                }
+                // console.log(getRight);
+                console.log(getRight.indexOf(rightPic) + " is the index of the rightpic in the hits array");
+                var rightPicIndex = getRight.indexOf(rightPic);
+                var score = response.hits[rightPicIndex].score
+                score = (score.toFixed(2)) * 100
 
+                $("#value"+i).text(score);
                 // do something with response
                 // response will contain the values of the url vs urls in clarifai cloud
-                console.log(response);
+                console.log("--------------------------------------------")
                 // This is where we will do somthing with the response in terms of right or wrong
                 // Send it to the correct place on the HTML
                 // Will add component to check if url is in the game url list
@@ -244,7 +258,7 @@ var game = {
         saveClose.update(update);
 
         for (var i = 0; i < game.userPics.length; i++) {
-            game.checkURL(game.userPics[i]);
+            game.checkURL(game.userPics[i], i);
         }
         $(".gameRoom").fadeOut();
         setTimeout(function () {
