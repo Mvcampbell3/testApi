@@ -48,7 +48,11 @@
             margin: 8px 0;
         }
 
-        .loginArea{
+        /* .loginArea{
+            display: none;
+        } */
+
+        .roomArea{
             display: none;
         }
 
@@ -56,9 +60,13 @@
             display: none;
         }
 
-        .gameRoom img{
+        img{
             width: 300px;
             height: auto;
+        }
+
+        .logBtn{
+            margin-top: 10px;
         }
     
     </style>
@@ -73,7 +81,7 @@
             <input type="text" name="email" id="emailInputSign"><br>
             <label for="password">Password</label><br>
             <input type="password" name="password" id="passwordInputSign"><br>
-            <button class="signUpSubBtn">Submit Sign Up</button>
+            <button class="btn logBtn signUpSubBtn">Submit Sign Up</button>
         </form>
 
         <br>
@@ -85,7 +93,7 @@
             <input type="text" name="email" id="emailInputLog"><br>
             <label for="password">Password</label><br>
             <input type="password" name="password" id="passwordInputLog"><br>
-            <button class="loginSubBtn">Submit Login</button>
+            <button class="btn logBtn loginSubBtn">Submit Login</button>
         </form>
     </div>
 
@@ -121,7 +129,12 @@
         <label for="roomName">Room Name:</label><br>
         <input type="text" name="roomName" id="roomName"><br>
         <button class="btn selectRoom testGame1" data-game="testGame1">TestGame1</button>
-        <!-- <button class="btn selectRoom testGame2" data-game="testGame2">TestGame2</button> -->
+    </div>
+
+    <div class="resultArea">
+        <img src="" alt="" id="imgGuess">
+        <img src="" alt="" id="imgRight">
+        <h3 id="value"></h3>
     </div>
 
 

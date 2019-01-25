@@ -11,25 +11,61 @@ firebase.initializeApp(config);
 
 // ------------ Authentication Area -----------------//
 
-var authenication = {
+var authentication = {
     justSigned: false,
-    displayName: "MichaelC25",
+    displayName: null,
     // Need to set this from the form login page. update on html script for now
+    signUp: function (e) {
+        e.preventDefault();
+        authentication.justSigned = true;
+
+        authentication.displayName = $("#nameInputSign").val().trim();
+        var email = $("#emailInputSign").val().trim();
+        var password = $("#passwordInputSign").val().trim();
+
+        var promise = firebase.auth().createUserWithEmailAndPassword(email, password)
+
+        promise.catch(function (error) {
+            console.log(error.code + ": " + error.message);
+        });
+    },
+
+    login: function (e) {
+        e.preventDefault();
+
+        var email = $("#emailInputLog").val().trim();
+        var password = $("#passwordInputLog").val().trim();
+
+        var promise = firebase.auth().signInWithEmailAndPassword(email, password);
+
+        promise.catch(function (error) {
+            console.log(error.code + ": " + error.message);
+        })
+    },
+
+    moveToRooms: function () {
+        $(".loginArea").slideUp();
+        $(".roomArea").slideDown();
+    },
+
 
 
     hello: firebase.auth().onAuthStateChanged(function (user) {
-        if (user && this.justSigned) {
+        if (user && authentication.justSigned) {
             // User is signed in and just created account
             user.updateProfile({
-                displayName: this.displayName,
+                displayName: authentication.displayName,
             });
-            justSigned = false;
+            console.log("ran justSigned");
+            authentication.justSigned = false;
+            authentication.moveToRooms();
             console.log(user + " first sign in");
-        } else if (user && !this.justSigned) {
+        } else if (user && !authentication.justSigned) {
             // User is signed in and already was a user
             console.log(user);
             console.log(user.displayName + " logged in again");
-            this.displayName = user.displayName;
+            authentication.displayName = user.displayName;
+            authentication.moveToRooms();
         } else {
             console.log("not logged in");
             // Not signed in
@@ -95,11 +131,12 @@ var game = {
             }).then(function (response) {
                 console.log("finished");
                 console.log(response);
-                game.addToClarifai();
+                setTimeout(game.runCompare, 3000);
             });
     },
 
     // Loads the 5 urls from correctPics to clarifai cloud
+    // Not in use due to clarifai only storing the same url once
     addToClarifai: function () {
 
         if (game.correctPics.length === 5) {
@@ -123,21 +160,6 @@ var game = {
                 }
             );
         }
-    },
-
-    // This is what we might want to use in the game, may want to think about using arrays and then for looping them through to keep time down
-    addToClarifaiExact: function (URL, ID) {
-        app.inputs.create({
-            url: URL,
-            id: ID
-        }).then(
-            function (response) {
-                console.log(response);
-            },
-            function (err) {
-                console.log(err);
-            }
-        )
     },
 
     checkClarifaiStorage: function () {
@@ -177,7 +199,7 @@ var game = {
         var id_4 = userRoom.roomKey + ("pic4");
         var id_5 = userRoom.roomKey + ("pic5");
 
-        app.inputs.delete([{id_1}, {id_2}, {id_3}, {id_4}, {id_5}]).then(
+        app.inputs.delete([{ id_1 }, { id_2 }, { id_3 }, { id_4 }, { id_5 }]).then(
             function (response) {
                 console.log(response);
             },
@@ -192,10 +214,20 @@ var game = {
         // can also be targeted if cloud storage is too big
         app.inputs.search({ input: { url: URL } }).then(
             function (response) {
+                console.log("This was the url used " + URL);
+                // Gets the highest return score
+                // console.log(response.hits[0].score)
+                $("#imgGuess").attr("src", URL);
+                $("#imgRight").attr("src", response.hits[0].input.data.image.url);
+                // console.log(response.hits[0].input.data.image.url)
+                $("#value").text(response.hits[0].score.toFixed(2))
+
                 // do something with response
                 // response will contain the values of the url vs urls in clarifai cloud
                 console.log(response);
                 // This is where we will do somthing with the response in terms of right or wrong
+                // Send it to the correct place on the HTML
+                // Will add component to check if url is in the game url list
             },
             function (err) {
                 // there was an error
@@ -205,12 +237,18 @@ var game = {
     },
 
     runCompare: function () {
+        var update = {
+            closed: true,
+        };
+        var saveClose = firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey);
+        saveClose.update(update);
+
         for (var i = 0; i < game.userPics.length; i++) {
             game.checkURL(game.userPics[i]);
         }
         $(".gameRoom").fadeOut();
         setTimeout(function () {
-            game.deleteClarifai();
+
             firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).off();
             firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).remove();
             console.log(userRoom.roomKey);
@@ -219,21 +257,11 @@ var game = {
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic3URL").delete();
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic4URL").delete();
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic5URL").delete();
-
-
-
             $(".roomArea").show();
         }, 5000);
     },
 
-    setGameDatabase: function () {
-        // What will set user gen game databases
-        // MVP only premade test games at first, when running can add
-        console.log("still working on that")
-        var database = firebase.database().ref("/gameStorage/" + game.roomName);
 
-
-    },
 }; //End of Game Object
 
 // ---------------File Input ---------------//
@@ -374,11 +402,17 @@ function updateDatabase() {
 function setUpRelay() {
     var real = firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).on("value", function (snapshot) {
         console.log("loading picture urls")
-        $("#img1").attr("src", snapshot.val().pic1URL)
-        $("#img2").attr("src", snapshot.val().pic2URL)
-        $("#img3").attr("src", snapshot.val().pic3URL)
-        $("#img4").attr("src", snapshot.val().pic4URL)
-        $("#img5").attr("src", snapshot.val().pic5URL)
+        if (snapshot.val().closed === false) {
+            $("#img1").attr("src", snapshot.val().pic1URL);
+            $("#img2").attr("src", snapshot.val().pic2URL);
+            $("#img3").attr("src", snapshot.val().pic3URL);
+            $("#img4").attr("src", snapshot.val().pic4URL);
+            $("#img5").attr("src", snapshot.val().pic5URL);
+        } else {
+            $(".gameRoom").hide();
+            $(".roomArea").show();
+        }
+
     })
 }
 
@@ -410,7 +444,6 @@ var userRoom = {
         });
     },
 
-
     roomDatabaseInit: function () {
         // Need to push room to userRooms database
         // Save Room ID;
@@ -427,10 +460,10 @@ var userRoom = {
 
             roomName: userRoom.roomName,
             roomKey: "",
-            roomCreator: authenication.displayName,
+            roomCreator: authentication.displayName,
+            closed: false,
 
-
-            users: [authenication.displayName],
+            users: [authentication.displayName],
             // Will be grabbed from auth process
 
             pic1URL: this.picURLs[0],
@@ -458,20 +491,6 @@ var userRoom = {
         });
 
     },
-
-    // addToPage: firebase.database().ref("/gameStorage/userRooms").on("child_added", function (snapshot) {
-    //     var childKey = snapshot.key;
-    //     var childData = snapshot.val();
-    //     // console.log(childData);
-    //     console.log(childKey);
-
-    //     var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childKey);
-    //     var title = $("<h2>").attr("class", "divTitle").text(childData.roomName);
-    //     var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
-
-    //     newDiv.append(title, userNum);
-    //     $(".outputArea").prepend(newDiv);
-    // }),
 
     sendRoomstoPage: firebase.database().ref("/gameStorage/userRooms").on("value", function (snap) {
         $(".outputArea").html("");
@@ -520,9 +539,8 @@ var userRoom = {
     }
 }
 
-setTimeout(function () {
-    $(".roomArea").slideDown();
-}, 1000);
+$(".signUpSubBtn").on("click", authentication.signUp);
+$(".loginSubBtn").on("click", authentication.login);
 
 $(".outputArea").on("click", ".box", userRoom.openRoom);
 
@@ -554,9 +572,12 @@ $(".selectRoom").on("click", function () {
 
 
 
+// Only for loading our games to the databases
 
 function setTestGame() {
     var database = firebase.database().ref("/gameStorage/games/testGame1");
+    // set to game name
+
 
     database.set([
         {
@@ -583,6 +604,28 @@ function setTestGame() {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
             picHint: "Lightning Mcqueen",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161641626.jpg?alt=media&token=30e3a751-ac55-4a3e-87aa-02fbd1f3e5d3"
+        }
+
+    ]);
+
+    app.inputs.create([
+        // pretty certain can run for loop with right keys
+        // may want to ad id's to the mix or metadata
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161536997.jpg?alt=media&token=96cecc86-de0e-4169-bf11-c68d8d39045f" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161547509.jpg?alt=media&token=36d5318a-89d1-4578-821f-06038cc2b5e1" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161616979.jpg?alt=media&token=f0479709-6b91-4c24-9106-1d36909626f9" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161630353.jpg?alt=media&token=3c1a5b30-c30d-4ae3-b5dc-5c72555fbf93" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161641626.jpg?alt=media&token=30e3a751-ac55-4a3e-87aa-02fbd1f3e5d3" },
+    ]).then(
+        function (response) {
+            // do something with response
+            console.log(response);
         },
-    ])
+        function (err) {
+            // there was an error
+            console.log(err);
+        }
+    );
+
+
 }
