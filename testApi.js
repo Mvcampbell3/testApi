@@ -137,6 +137,7 @@ var game = {
 
     // Loads the 5 urls from correctPics to clarifai cloud
     // Not in use due to clarifai only storing the same url once
+    // Will user when making the games
     addToClarifai: function () {
 
         if (game.correctPics.length === 5) {
@@ -211,37 +212,42 @@ var game = {
 
     checkURL: function (URL, i) {
         // Basic component of the game, get the values back
-        // can also be targeted if cloud storage is too big
         app.inputs.search({ input: { url: URL } }).then(
             function (response) {
+
+                // What this is going to do is grab the user pic and correct pic and send them to the html
+                // Run the comparison of the url for user pic against all pics in clarifai database
+                // Find the score of the url of the correct pic for that input
+                // Post that score to the html
+
+                // You can maybe add them up for an overall score or something
+                // Will be in form of 89 meaning 89% similairty between pics
+
+                // The Html endpoints are the same names with 0, 1, 2, 3, or 4 seperating them from eachother
+                // uses iterator from the runCompare() for loop as the number for each check
+                // This is because they come back in different order than put in
+
+
                 console.log("-------------------------------------------")
                 console.log(response);
                 console.log("This was the url used " + URL);
+                console.log(i + " was the iterator from run compare");
                 $("#imgGuess"+i).attr("src", game.userPics[i]);
                 $("#imgRight"+i).attr("src", game.correctPics[i])
                 var rightPic = game.correctPics[i];
-                // console.log(response.hits[0].input.data.image.url)
-                console.log(i + " was the iterator from run compare");
                 console.log(game.correctPics[i]);
                 console.log(game.userPics[i]);
                 var getRight = [];
                 for (var j = 0; j < response.hits.length; j++) {
-                    // console.log(response.hits[i].input.data.image.url);
                     getRight.push(response.hits[j].input.data.image.url);
                 }
-                // console.log(getRight);
                 console.log(getRight.indexOf(rightPic) + " is the index of the rightpic in the hits array");
                 var rightPicIndex = getRight.indexOf(rightPic);
                 var score = response.hits[rightPicIndex].score
                 score = (score.toFixed(2)) * 100
 
                 $("#value"+i).text(score);
-                // do something with response
-                // response will contain the values of the url vs urls in clarifai cloud
                 console.log("--------------------------------------------")
-                // This is where we will do somthing with the response in terms of right or wrong
-                // Send it to the correct place on the HTML
-                // Will add component to check if url is in the game url list
             },
             function (err) {
                 // there was an error
@@ -251,6 +257,8 @@ var game = {
     },
 
     runCompare: function () {
+        // When this gets through the response, will delete all of the userRoom information
+        // Can keep this way or can move to the event when result page closed
         var update = {
             closed: true,
         };
@@ -417,12 +425,14 @@ function setUpRelay() {
     var real = firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).on("value", function (snapshot) {
         console.log("loading picture urls")
         if (snapshot.val().closed === false) {
+            // this will change when the files are sumbitted to runCompare();
             $("#img1").attr("src", snapshot.val().pic1URL);
             $("#img2").attr("src", snapshot.val().pic2URL);
             $("#img3").attr("src", snapshot.val().pic3URL);
             $("#img4").attr("src", snapshot.val().pic4URL);
             $("#img5").attr("src", snapshot.val().pic5URL);
         } else {
+            // Kicks people out of the room
             $(".gameRoom").hide();
             $(".roomArea").show();
         }
@@ -459,9 +469,6 @@ var userRoom = {
     },
 
     roomDatabaseInit: function () {
-        // Need to push room to userRooms database
-        // Save Room ID;
-        // Data-room 
         var roomDatabase = firebase.database().ref("/gameStorage/userRooms/")
         var roomNew = roomDatabase.push();
 
@@ -587,6 +594,7 @@ $(".selectRoom").on("click", function () {
 
 
 // Only for loading our games to the databases
+// Need to manually load pics to firebase storage to get urls
 
 function setTestGame() {
     var database = firebase.database().ref("/gameStorage/games/testGame1");
@@ -623,8 +631,6 @@ function setTestGame() {
     ]);
 
     app.inputs.create([
-        // pretty certain can run for loop with right keys
-        // may want to ad id's to the mix or metadata
         { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161536997.jpg?alt=media&token=96cecc86-de0e-4169-bf11-c68d8d39045f" },
         { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161547509.jpg?alt=media&token=36d5318a-89d1-4578-821f-06038cc2b5e1" },
         { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161616979.jpg?alt=media&token=f0479709-6b91-4c24-9106-1d36909626f9" },
@@ -634,6 +640,7 @@ function setTestGame() {
         function (response) {
             // do something with response
             console.log(response);
+            console.log("loading was successful");
         },
         function (err) {
             // there was an error
