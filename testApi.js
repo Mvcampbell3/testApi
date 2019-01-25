@@ -279,7 +279,7 @@ var game = {
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic3URL").delete();
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic4URL").delete();
             firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic5URL").delete();
-            $(".roomArea").show();
+            $(".resultArea").show();
         }, 5000);
     },
 
@@ -516,13 +516,16 @@ var userRoom = {
     sendRoomstoPage: firebase.database().ref("/gameStorage/userRooms").on("value", function (snap) {
         $(".outputArea").html("");
         snap.forEach(function (childSnap) {
+            
             var childKey = childSnap.key;
             var childData = childSnap.val();
             var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childKey);
             var title = $("<h2>").attr("class", "divTitle").text(childData.roomName);
-            var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
 
-            newDiv.append(title, userNum);
+            // var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
+            // Not keeping track of users 
+            // newDiv.append(title, userNum);
+            newDiv.append(title);
             $(".outputArea").prepend(newDiv);
         })
     }),
