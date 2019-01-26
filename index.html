@@ -22,11 +22,8 @@
                 <label for="password">Password</label><br>
                 <input type="password" name="password" id="passwordInputSign"><br>
                 <button class="btn logBtn signUpSubBtn">Submit Sign Up</button>
+                <button class="join btn logBtn">Back</button>
             </form>
-
-            <br>
-            <hr>
-            <br>
 
             <form class="log" action="">
                 <label for="email">Email Address</label><br>
@@ -34,6 +31,7 @@
                 <label for="password">Password</label><br>
                 <input type="password" name="password" id="passwordInputLog"><br>
                 <button class="btn logBtn loginSubBtn">Submit Login</button>
+                <button class="join btn logBtn">Join</button>
             </form>
         </div>
     </div>
@@ -46,28 +44,28 @@
                 <div class="group">
                     <h3 class="hint" id="hint1"></h3>
                     <img src="" alt="" id="img1">
-                    <input type="file" accept="image/*" id="file-input1" data-pic="pic1URL" data-full="input_1_full"><br>
+                    <input class="file" type="file" accept="image/*" id="file-input1" data-pic="pic1URL" data-full="input_1_full"><br>
                 </div>
                 <div class="group">
                     <h3 class="hint" id="hint2"></h3>
                     <img src="" alt="" id="img2">
-                    <input type="file" accept="image/*" id="file-input2" data-pic="pic2URL" data-full="input_2_full"><br>
+                    <input class="file" type="file" accept="image/*" id="file-input2" data-pic="pic2URL" data-full="input_2_full"><br>
                 </div>
                 <div class="group">
                     <h3 class="hint" id="hint3"></h3>
                     <img src="" alt="" id="img3">
-                    <input type="file" accept="image/*" id="file-input3" data-pic="pic3URL" data-full="input_3_full"><br>
+                    <input class="file" type="file" accept="image/*" id="file-input3" data-pic="pic3URL" data-full="input_3_full"><br>
                 </div>
                 <div class="group">
                     <h3 class="hint" id="hint4"></h3>
                     <img src="" alt="" id="img4">
-                    <input type="file" accept="image/*" id="file-input4" data-pic="pic4URL" data-full="input_4_full"><br>
+                    <input class="file" type="file" accept="image/*" id="file-input4" data-pic="pic4URL" data-full="input_4_full"><br>
 
                 </div>
                 <div class="group">
                     <h3 class="hint" id="hint5"></h3>
                     <img src="" alt="" id="img5"><br>
-                    <input type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
+                    <input class="file" type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
                 </div>
             </div>
             <button class="btn subBtn">Submit Answers</button>
@@ -96,22 +94,35 @@
     </div>
 
     <div class="resultArea">
-        <img src="" alt="" id="imgGuess0">
-        <img src="" alt="" id="imgRight0">
-        <h3 id="value0"></h3>
-        <img src="" alt="" id="imgGuess1">
-        <img src="" alt="" id="imgRight1">
-        <h3 id="value1"></h3>
-        <img src="" alt="" id="imgGuess2">
-        <img src="" alt="" id="imgRight2">
-        <h3 id="value2"></h3>
-        <img src="" alt="" id="imgGuess3">
-        <img src="" alt="" id="imgRight3">
-        <h3 id="value3"></h3>
-        <img src="" alt="" id="imgGuess4">
-        <img src="" alt="" id="imgRight4">
-        <h3 id="value4"></h3>
-        <button class="closeResult btn">Close</button>
+        <div class="flex-col">
+            <div class="group-result">
+                <img src="" alt="" id="imgGuess0">
+                <img src="" alt="" id="imgRight0">
+                <h3>Your Score was <span id="value0"></span>%!</h3>
+            </div>
+            <div class="group-result">
+                <img src="" alt="" id="imgGuess1">
+                <img src="" alt="" id="imgRight1">
+                <h3>Your Score was <span id="value1"></span>%!</h3>
+            </div>
+            <div class="group-result">
+                <img src="" alt="" id="imgGuess2">
+                <img src="" alt="" id="imgRight2">
+                <h3>Your Score was <span id="value2"></span>%!</h3>
+            </div>
+            <div class="group-result">
+                <img src="" alt="" id="imgGuess3">
+                <img src="" alt="" id="imgRight3">
+                <h3>Your Score was <span id="value3"></span>%!</h3>
+            </div>
+            <div class="group-result">
+                <img src="" alt="" id="imgGuess4">
+                <img src="" alt="" id="imgRight4">
+                <h3>Your Score was <span id="value4"></span>%!</h3>
+            </div>
+            <button class="close btn">Close</button>
+
+        </div>
     </div>
 
 

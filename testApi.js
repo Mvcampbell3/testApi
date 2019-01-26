@@ -233,8 +233,8 @@ var game = {
                 console.log(response);
                 console.log("This was the url used " + URL);
                 console.log(i + " was the iterator from run compare");
-                $("#imgGuess"+i).attr("src", game.userPics[i]);
-                $("#imgRight"+i).attr("src", game.correctPics[i])
+                $("#imgGuess" + i).attr("src", game.userPics[i]);
+                $("#imgRight" + i).attr("src", game.correctPics[i])
                 var rightPic = game.correctPics[i];
                 console.log(game.correctPics[i]);
                 console.log(game.userPics[i]);
@@ -247,7 +247,7 @@ var game = {
                 var score = response.hits[rightPicIndex].score
                 score = (score.toFixed(2)) * 100
 
-                $("#value"+i).text(score);
+                $("#value" + i).text(score);
                 console.log("--------------------------------------------")
             },
             function (err) {
@@ -270,18 +270,9 @@ var game = {
             game.checkURL(game.userPics[i], i);
         }
         $(".gameRoom").fadeOut();
-        setTimeout(function () {
-
-            firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).off();
-            firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).remove();
-            console.log(userRoom.roomKey);
-            firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic1URL").delete();
-            firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic2URL").delete();
-            firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic3URL").delete();
-            firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic4URL").delete();
-            firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic5URL").delete();
-            $(".resultArea").show();
-        }, 5000);
+        setTimeout(function(){
+            $(".resultArea").fadeIn()
+        }, 4000);
     },
 
 
@@ -435,7 +426,7 @@ function setUpRelay() {
         } else {
             // Kicks people out of the room
             $(".gameRoom").hide();
-            $(".roomArea").show();
+            $(".resultArea").show();
         }
 
     })
@@ -517,7 +508,7 @@ var userRoom = {
     sendRoomstoPage: firebase.database().ref("/gameStorage/userRooms").on("value", function (snap) {
         $(".outputArea").html("");
         snap.forEach(function (childSnap) {
-            
+
             var childKey = childSnap.key;
             var childData = childSnap.val();
             var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childKey);
@@ -575,7 +566,7 @@ $(".subBtn").on("click", game.getURL);
 $(".createRoom").on("click", function () {
     $(".roomArea").slideUp();
     $(".createRoomArea").slideDown();
-})
+});
 
 $(".selectRoom").on("click", function () {
     userRoom.gameName = $(this).attr("data-game");
@@ -586,6 +577,29 @@ $(".selectRoom").on("click", function () {
         $(".createRoomArea").slideUp();
         $(".gameRoom").slideDown();
     }, 3000);
+});
+
+$(".join").on("click", function (e) {
+    e.preventDefault();
+    $(".sign").slideToggle();
+    $(".log").slideToggle();
+});
+
+$(".close").on("click", function () {
+    firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).off();
+    firebase.database().ref("/gameStorage/userRooms/" + userRoom.roomKey).remove();
+    console.log(userRoom.roomKey);
+    firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic1URL").delete();
+    firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic2URL").delete();
+    firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic3URL").delete();
+    firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic4URL").delete();
+    firebase.storage().ref('userPics/' + userRoom.roomKey + "/pic5URL").delete();
+    $(".roomTitle").text("Game Rooms")
+    setTimeout(function(){
+        $(".resultArea").slideUp();
+        $(".roomArea").slideDown();
+    }, 2000);
+
 })
 
 
@@ -608,27 +622,27 @@ function setTestGame() {
     database.set([
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "HardWired",
+            picHint: "Spit out the Bone",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200617772.jpg?alt=media&token=0db2a77f-5ae0-40ae-9d49-ec655d128277"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "GOTG",
+            picHint: "Come and Get Your Love",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200630286.jpg?alt=media&token=d1f911f6-322d-4e7a-b4d8-e2a247be9fff"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "BluesBros",
+            picHint: "Sweet Home Chicago",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200641315.jpg?alt=media&token=b579e601-94ca-4e93-b4d0-ed72c993da76",
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "NR&TNS",
+            picHint: "Need Never Get Old",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200705502.jpg?alt=media&token=13ebccaf-6a56-4975-a027-7d3e9387366f"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "CCR",
+            picHint: "Fortunate Son",
             picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200720504.jpg?alt=media&token=651337b4-af22-4771-b7bf-8b7a32322c69"
         }
 
