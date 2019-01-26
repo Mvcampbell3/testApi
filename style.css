@@ -8,31 +8,78 @@ body{
 }
 
 .loginArea{
-    height: 100vh;
+    display: none;
     background-color: #222;
     width: 100vw;
+    height: 100vh;
+}
+
+.wrapper{
+    width: 70%;
+    margin: auto;
+    padding-top: 40px;
+    text-align: center;
 }
 
 .box{
-    width: 400px;
+    width: 60%;
+    background: linear-gradient(45deg, deepskyblue, black);
+    border-radius: 15px;
+    color: white;
     display: flex;
     height: 60px;
-    border: 1px black solid;
+    border: 3px white solid;
+    box-shadow: 3px 3px 3px black;
     justify-content: space-evenly;
-    margin-bottom: 3px;
     cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.outputArea{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+    margin-bottom: 10px;
 }
 
 .gameRoom{
     display: none;
+    height: 100%;
+    width: 100%;
+}
+
+.group-container{
+    display: flex;
+    flex-basis: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.group{
+    width: 400px;
+    margin: 5px;
+}
+
+.roomTitle{
+    color: white;
+    text-transform: uppercase;
+    font-size: 40px;
+    line-height: 1;
 }
 
 .btn{
+    background-color: skyblue;
+    color: black;
     width: 175px;
     text-align: center;
     padding: 5px 0;
     font-size: 20px;
     border: 1px black solid;
+    border-radius: 15px;
     box-shadow: 3px 3px 5px black;
     outline: none;
 }
@@ -40,9 +87,33 @@ body{
     background-color: red;
 }
 
-input[type=text]{
+.createRoom{
+    margin-bottom: 5px;
+}
+
+input[type=text], input[type=password]{
     font-size: 20px;
     margin-bottom: 10px;
+    width: 80%;
+}
+
+.sign input{
+    background-color: deepskyblue;
+    color: #333;
+    padding: 3px 0;
+    text-align: center;
+}
+
+.log input{
+    background-color: rgb(62, 125, 146);
+    color: #333;
+    padding: 3px 0;
+    text-align: center;
+}
+
+.outputArea{
+    min-height: 300px;
+    background-color: rgba(120, 120, 120, .6);
 }
 
 .createRoomArea{

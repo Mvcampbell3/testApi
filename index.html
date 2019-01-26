@@ -7,67 +7,92 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
-    
-    
+
+
 </head>
 
 <body>
     <div class="loginArea">
-        <form action="">
-            <label for="name">Name</label><br>
-            <input type="text" name="name" id="nameInputSign"><br>
-            <label for="email">Email Address</label><br>
-            <input type="text" name="email" id="emailInputSign"><br>
-            <label for="password">Password</label><br>
-            <input type="password" name="password" id="passwordInputSign"><br>
-            <button class="btn logBtn signUpSubBtn">Submit Sign Up</button>
-        </form>
+        <div class="wrapper">
+            <form class="sign" action="">
+                <label for="name">Name</label><br>
+                <input type="text" name="name" id="nameInputSign"><br>
+                <label for="email">Email Address</label><br>
+                <input type="text" name="email" id="emailInputSign"><br>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" id="passwordInputSign"><br>
+                <button class="btn logBtn signUpSubBtn">Submit Sign Up</button>
+            </form>
 
-        <br>
-        <hr>
-        <br>
+            <br>
+            <hr>
+            <br>
 
-        <form action="">
-            <label for="email">Email Address</label><br>
-            <input type="text" name="email" id="emailInputLog"><br>
-            <label for="password">Password</label><br>
-            <input type="password" name="password" id="passwordInputLog"><br>
-            <button class="btn logBtn loginSubBtn">Submit Login</button>
-        </form>
-    </div>
-
-
-    <div id ="gameRoom" class="gameRoom">
-        <h2 class="roomTitle">Room Name</h2>
-        <h3 class="hint" id="hint1"></h3>
-        <input type="file" accept="image/*" id="file-input1" data-pic="pic1URL" data-full="input_1_full"><br>
-        <img src="" alt="" id="img1">
-        <h3 class="hint" id="hint2"></h3>
-        <input type="file" accept="image/*" id="file-input2" data-pic="pic2URL" data-full="input_2_full"><br>
-        <img src="" alt="" id="img2">
-        <h3 class="hint" id="hint3"></h3>
-        <input type="file" accept="image/*" id="file-input3" data-pic="pic3URL" data-full="input_3_full"><br>
-        <img src="" alt="" id="img3">
-        <h3 class="hint" id="hint4"></h3>
-        <input type="file" accept="image/*" id="file-input4" data-pic="pic4URL" data-full="input_4_full"><br>
-        <img src="" alt="" id="img4">
-        <h3 class="hint" id="hint5"></h3>
-        <input type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
-        <img src="" alt="" id="img5"><br>
-        <button class="btn subBtn">Submit Answers</button>
-
-    </div>
-    <div class="roomArea">
-        <div class="outputArea"></div>
-        <div class="buttonArea">
-            <div class="createRoom btn">Create</div>
+            <form class="log" action="">
+                <label for="email">Email Address</label><br>
+                <input type="text" name="email" id="emailInputLog"><br>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" id="passwordInputLog"><br>
+                <button class="btn logBtn loginSubBtn">Submit Login</button>
+            </form>
         </div>
     </div>
-    
+
+
+    <div id="gameRoom" class="gameRoom">
+        <div class="wrapper">
+            <h2 class="roomTitle">Room Name</h2>
+            <div class="group-container">
+                <div class="group">
+                    <h3 class="hint" id="hint1"></h3>
+                    <img src="" alt="" id="img1">
+                    <input type="file" accept="image/*" id="file-input1" data-pic="pic1URL" data-full="input_1_full"><br>
+                </div>
+                <div class="group">
+                    <h3 class="hint" id="hint2"></h3>
+                    <img src="" alt="" id="img2">
+                    <input type="file" accept="image/*" id="file-input2" data-pic="pic2URL" data-full="input_2_full"><br>
+                </div>
+                <div class="group">
+                    <h3 class="hint" id="hint3"></h3>
+                    <img src="" alt="" id="img3">
+                    <input type="file" accept="image/*" id="file-input3" data-pic="pic3URL" data-full="input_3_full"><br>
+                </div>
+                <div class="group">
+                    <h3 class="hint" id="hint4"></h3>
+                    <img src="" alt="" id="img4">
+                    <input type="file" accept="image/*" id="file-input4" data-pic="pic4URL" data-full="input_4_full"><br>
+
+                </div>
+                <div class="group">
+                    <h3 class="hint" id="hint5"></h3>
+                    <img src="" alt="" id="img5"><br>
+                    <input type="file" accept="image/*" id="file-input5" data-pic="pic5URL" data-full="input_5_full"><br>
+                </div>
+            </div>
+            <button class="btn subBtn">Submit Answers</button>
+        </div>
+    </div>
+
+    <div class="roomArea">
+        <div class="wrapper">
+
+            <h2 class="roomTitle">Game Rooms</h2 class="roomTitle">
+            <div class="buttonArea">
+                <div class="createRoom btn">Create</div>
+            </div>
+            <div class="outputArea"></div>
+
+        </div>
+    </div>
+
     <div class="createRoomArea">
-        <label for="roomName">Room Name:</label><br>
-        <input type="text" name="roomName" id="roomName"><br>
-        <button class="btn selectRoom testGame1" data-game="testGame1">TestGame1</button>
+        <div class="wrapper">
+            <label for="roomName">Room Name:</label><br>
+            <input type="text" name="roomName" id="roomName"><br>
+            <button class="btn selectRoom testGame1" data-game="testGame1">TestGame1</button>
+        </div>
+
     </div>
 
     <div class="resultArea">
@@ -103,7 +128,7 @@
 
     <script src="testApi.js"></script>
     <script>
-        
+
 
     </script>
 </body>

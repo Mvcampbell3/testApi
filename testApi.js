@@ -69,10 +69,11 @@ var authentication = {
         } else {
             console.log("not logged in");
             // Not signed in
+            $(".loginArea").slideDown();
         }
     }),
 
-    goodbye: firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+    goodbye: firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         .then(function () {
             var provider = new firebase.auth.GoogleAuthProvider();
             // In memory persistence will be applied to the signed in Google user
@@ -520,7 +521,7 @@ var userRoom = {
             var childKey = childSnap.key;
             var childData = childSnap.val();
             var newDiv = $("<div>").attr("class", "box").attr("data-roomKey", childKey);
-            var title = $("<h2>").attr("class", "divTitle").text(childData.roomName);
+            var title = $("<h2>").attr("class", "divTitle").text(childData.roomName.toUpperCase());
 
             // var userNum = $("<h2>").attr("class", "userNum").text(childData.users.length);
             // Not keeping track of users 
