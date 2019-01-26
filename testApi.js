@@ -601,45 +601,45 @@ $(".selectRoom").on("click", function () {
 // Need to manually load pics to firebase storage to get urls
 
 function setTestGame() {
-    var database = firebase.database().ref("/gameStorage/games/testGame1");
+    var database = firebase.database().ref("/gameStorage/games/testGame2");
     // set to game name
 
 
     database.set([
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "Birthday Sign",
-            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161536997.jpg?alt=media&token=96cecc86-de0e-4169-bf11-c68d8d39045f"
+            picHint: "HardWired",
+            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200617772.jpg?alt=media&token=0db2a77f-5ae0-40ae-9d49-ec655d128277"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "Home Sign",
-            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161547509.jpg?alt=media&token=36d5318a-89d1-4578-821f-06038cc2b5e1"
+            picHint: "GOTG",
+            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200630286.jpg?alt=media&token=d1f911f6-322d-4e7a-b4d8-e2a247be9fff"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "Air Fryer",
-            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161616979.jpg?alt=media&token=f0479709-6b91-4c24-9106-1d36909626f9",
+            picHint: "BluesBros",
+            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200641315.jpg?alt=media&token=b579e601-94ca-4e93-b4d0-ed72c993da76",
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "Instant Pot",
-            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161630353.jpg?alt=media&token=3c1a5b30-c30d-4ae3-b5dc-5c72555fbf93"
+            picHint: "NR&TNS",
+            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200705502.jpg?alt=media&token=13ebccaf-6a56-4975-a027-7d3e9387366f"
         },
         {
             picURL: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FnotGuessed.jpg?alt=media&token=39e3d7d3-dce7-422b-9de7-a5a9d48a2404",
-            picHint: "Lightning Mcqueen",
-            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161641626.jpg?alt=media&token=30e3a751-ac55-4a3e-87aa-02fbd1f3e5d3"
+            picHint: "CCR",
+            picRight: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200720504.jpg?alt=media&token=651337b4-af22-4771-b7bf-8b7a32322c69"
         }
 
     ]);
 
     app.inputs.create([
-        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161536997.jpg?alt=media&token=96cecc86-de0e-4169-bf11-c68d8d39045f" },
-        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161547509.jpg?alt=media&token=36d5318a-89d1-4578-821f-06038cc2b5e1" },
-        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161616979.jpg?alt=media&token=f0479709-6b91-4c24-9106-1d36909626f9" },
-        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161630353.jpg?alt=media&token=3c1a5b30-c30d-4ae3-b5dc-5c72555fbf93" },
-        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame%2FIMG_20190120_161641626.jpg?alt=media&token=30e3a751-ac55-4a3e-87aa-02fbd1f3e5d3" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200617772.jpg?alt=media&token=0db2a77f-5ae0-40ae-9d49-ec655d128277" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200630286.jpg?alt=media&token=d1f911f6-322d-4e7a-b4d8-e2a247be9fff" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200641315.jpg?alt=media&token=b579e601-94ca-4e93-b4d0-ed72c993da76" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200705502.jpg?alt=media&token=13ebccaf-6a56-4975-a027-7d3e9387366f" },
+        { url: "https://firebasestorage.googleapis.com/v0/b/flu-fighters.appspot.com/o/gamePics%2FtestGame2%2FIMG_20190125_200720504.jpg?alt=media&token=651337b4-af22-4771-b7bf-8b7a32322c69" },
     ]).then(
         function (response) {
             // do something with response
